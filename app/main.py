@@ -1,35 +1,14 @@
-# main.py
-from fastapi import FastAPI, HTTPException
-import psycopg2
-from pydantic import BaseModel
+from fastapi import FastAPI
+from app.api.usuarios import routes as user_routes
+from app.db.database import Base, engine
 
-app = FastAPI()
+# Crear tablas (solo para pruebas o desarrollo)
+Base.metadata.create_all(bind=engine)
 
-# Modelo para los datos
-class User(BaseModel):
-    name: str
-    email: str
+app = FastAPI(
+    title="API Gestión IT",
+    version="1.0.0"
+)
 
-# Función para conectarse a PostgreSQL
-def get_connection():
-    return psycopg2.connect(
-        dbname="gestion_it",
-        user="postgres",
-        password="juan11",
-        host="localhost",  # o la IP del servidor
-        port="5432"
-    )
-
-@app.post("/users/")
-def create_user(user: User):
-    try:
-        conn = get_connection()
-        cursor = conn.cursor()
-        query = "INSERT INTO users (name, email) VALUES (%s, %s);"
-        cursor.execute(query, (user.name, user.email))
-        conn.commit()
-        cursor.close()
-        conn.close()
-        return {"message": "Usuario creado exitosamente"}
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+# Incluir rutas
+app.include_router(user_routes.router)
