@@ -1,12 +1,13 @@
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
 from app.db.database import SessionLocal
-from app.db.models.user import User
-from app.schemas.user import UserCreate, UserOut
+from app.services.usuario_service import obtener_todos_los_usuarios, crear_usuario, actualizar_usuario
+from app.schemas.usuario import UsuarioCreate, UsuarioOut, UsuarioResponse
+from typing import List
 
 router = APIRouter(prefix="/usuarios", tags=["usuarios"])
 
-# Dependency
+# Dependency para obtener la sesión de BD
 def get_db():
     db = SessionLocal()
     try:
@@ -14,13 +15,17 @@ def get_db():
     finally:
         db.close()
 
-@router.post("/", response_model=UserOut)
-def create_user(user: UserCreate, db: Session = Depends(get_db)):
-    db_user = db.query(User).filter(User.email == user.email).first()
-    if db_user:
-        raise HTTPException(status_code=400, detail="Email ya registrado")
-    new_user = User(**user.dict())
-    db.add(new_user)
-    db.commit()
-    db.refresh(new_user)
-    return new_user
+
+@router.post("/", response_model=UsuarioOut)
+def create_user(usuario: UsuarioCreate, db: Session = Depends(get_db)):
+    return crear_usuario(db, usuario)
+
+
+@router.get("/", response_model=List[UsuarioResponse])
+def show_users(db: Session = Depends(get_db)):
+    return obtener_todos_los_usuarios(db)
+
+
+@router.put("/{user_id}", response_model=UsuarioOut)
+def update_user(user_id: int, usuario: UsuarioCreate, db: Session = Depends(get_db)):
+    return actualizar_usuario(db, user_id, usuario)

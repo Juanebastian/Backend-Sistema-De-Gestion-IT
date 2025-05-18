@@ -1,5 +1,6 @@
 from fastapi import FastAPI
 from app.api.usuarios import routes as user_routes
+from app.api.auth import routes as auth_routes
 from app.db.database import Base, engine
 
 # Crear tablas (solo para pruebas o desarrollo)
@@ -12,3 +13,4 @@ app = FastAPI(
 
 # Incluir rutas
 app.include_router(user_routes.router)
+app.include_router(auth_routes.router)
