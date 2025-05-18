@@ -1,6 +1,8 @@
 from sqlalchemy import Column, Integer, String, Boolean, DateTime, ForeignKey
 from datetime import datetime
 from app.db.database import Base
+from app.db.models.area import Area
+from app.db.models.rol import Role
 
 class Usuario(Base):
     __tablename__ = "usuarios"
@@ -17,12 +19,3 @@ class Usuario(Base):
     fecha_actualizacion = Column(DateTime, default=datetime.utcnow)
 
 
-class Role(Base):
-    __tablename__ = "roles"
-    id = Column(Integer, primary_key=True)
-    nombre = Column(String)
-
-class Area(Base):
-        __tablename__ = "areas"
-        id = Column(Integer, primary_key=True)
-        nombre = Column(String)
