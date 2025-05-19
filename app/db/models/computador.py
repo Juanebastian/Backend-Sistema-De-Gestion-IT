@@ -1,32 +1,13 @@
 from sqlalchemy import Column, Integer, String, Date, ForeignKey, DateTime, Boolean
 from sqlalchemy.orm import relationship
-from sqlalchemy.sql import func  # <--- Agrega esta línea
+from sqlalchemy.sql import func
 from datetime import datetime
 from app.db.models.area import Area
+from app.db.models.marca import Marca
+from app.db.models.modelo import Modelo
+from app.db.models.os import SistemaOperativo
 from app.db.database import Base
 
-class Marca(Base):
-    __tablename__ = "marcas"
-    id = Column(Integer, primary_key=True, index=True)
-    nombre = Column(String(100), unique=True, nullable=False)
-
-    computadores = relationship("Computador", back_populates="marca")
-
-
-class Modelo(Base):
-    __tablename__ = "modelos"
-    id = Column(Integer, primary_key=True, index=True)
-    nombre = Column(String(100), unique=True, nullable=False)
-
-    computadores = relationship("Computador", back_populates="modelo")
-
-
-class SistemaOperativo(Base):
-    __tablename__ = "sistemas_operativos"
-    id = Column(Integer, primary_key=True, index=True)
-    nombre = Column(String(100), unique=True, nullable=False)
-
-    computadores = relationship("Computador", back_populates="sistema_operativo")
 
 
 class TipoComputador(Base):
