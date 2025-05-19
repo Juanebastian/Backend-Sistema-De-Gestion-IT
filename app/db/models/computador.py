@@ -1,30 +1,66 @@
-from sqlalchemy import Column, Integer, String, Date, ForeignKey, DateTime , Boolean
+from sqlalchemy import Column, Integer, String, Date, ForeignKey, DateTime, Boolean
 from sqlalchemy.orm import relationship
+from sqlalchemy.sql import func  # <--- Agrega esta línea
 from datetime import datetime
-from app.db.database import Base
 from app.db.models.area import Area
+from app.db.database import Base
+
+class Marca(Base):
+    __tablename__ = "marcas"
+    id = Column(Integer, primary_key=True, index=True)
+    nombre = Column(String(100), unique=True, nullable=False)
+
+    computadores = relationship("Computador", back_populates="marca")
+
+
+class Modelo(Base):
+    __tablename__ = "modelos"
+    id = Column(Integer, primary_key=True, index=True)
+    nombre = Column(String(100), unique=True, nullable=False)
+
+    computadores = relationship("Computador", back_populates="modelo")
+
+
+class SistemaOperativo(Base):
+    __tablename__ = "sistemas_operativos"
+    id = Column(Integer, primary_key=True, index=True)
+    nombre = Column(String(100), unique=True, nullable=False)
+
+    computadores = relationship("Computador", back_populates="sistema_operativo")
+
+
+class TipoComputador(Base):
+    __tablename__ = "tipos_computador"
+    id = Column(Integer, primary_key=True, index=True)
+    nombre = Column(String(50), unique=True, nullable=False)
+
+    computadores = relationship("Computador", back_populates="tipo")
+
 
 class Computador(Base):
     __tablename__ = "computadores"
 
     id = Column(Integer, primary_key=True, index=True)
-    marca = Column(String(50))
-    modelo = Column(String(50))
-    sistema_operativo = Column(String(50))
-    ram = Column(String(50))
-    disco_duro = Column(String(50))
-    tipo = Column(String(50))  # Laptop o Desktop
-    serie = Column(String(50))
-    codigo_inventario = Column(String(50), unique=True)
-    fecha_adquisicion = Column(Date)
-    activo = Column(Boolean, default=True, nullable=False)
-
-    id_registrado_por = Column(Integer, ForeignKey("usuarios.id"), nullable=False)
+    marca_id = Column(Integer, ForeignKey("marcas.id"))
+    modelo_id = Column(Integer, ForeignKey("modelos.id"))
+    sistema_operativo_id = Column(Integer, ForeignKey("sistemas_operativos.id"))
+    tipo_id = Column(Integer, ForeignKey("tipos_computador.id"))
     area_id = Column(Integer, ForeignKey("areas.id"))
+    id_registrado_por = Column(Integer, ForeignKey("usuarios.id"))
 
-    fecha_creacion = Column(DateTime, default=datetime.utcnow)
-    fecha_actualizacion = Column(DateTime, default=datetime.utcnow)
+    ram = Column(String)
+    disco_duro = Column(String)
+    serie = Column(String)
+    codigo_inventario = Column(String)
+    fecha_adquisicion = Column(Date)
+    activo = Column(Boolean, default=True)
+    fecha_creacion = Column(DateTime, default=func.now())
+    fecha_actualizacion = Column(DateTime, default=func.now(), onupdate=func.now())
 
     # Relaciones
-    #usuario = relationship("Usuario", backref="computadores")
-    #area = relationship("Area", backref="computadores")
+    marca = relationship("Marca", back_populates="computadores")
+    modelo = relationship("Modelo", back_populates="computadores")
+    sistema_operativo = relationship("SistemaOperativo", back_populates="computadores")
+    tipo = relationship("TipoComputador", back_populates="computadores")
+    area = relationship("Area", backref="computadores")
+    usuario = relationship("Usuario", backref="computadores", foreign_keys=[id_registrado_por])
