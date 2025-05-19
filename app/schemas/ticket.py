@@ -9,6 +9,7 @@ class TicketBase(BaseModel):
     prioridad_id: Optional[int]
     id_creador: int
     id_tecnico: Optional[int]
+    area_id: Optional[int]
 
 class TicketCreate(TicketBase):
     pass

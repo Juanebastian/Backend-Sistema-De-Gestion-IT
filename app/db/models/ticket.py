@@ -2,6 +2,7 @@ from sqlalchemy import Column, Integer, String, Text, ForeignKey, DateTime
 from sqlalchemy.orm import relationship
 from datetime import datetime
 from app.db.database import Base
+from app.db.models.area import Area
 
 class Ticket(Base):
     __tablename__ = "tickets"
@@ -16,12 +17,14 @@ class Ticket(Base):
     fecha_creacion = Column(DateTime, default=datetime.utcnow)
     fecha_actualizacion = Column(DateTime, default=datetime.utcnow)
     fecha_cierre = Column(DateTime, nullable=True)
+    area_id = Column(Integer, ForeignKey("areas.id"))
 
-    # Relaciones corregidas
+    # Relaciones
     estado = relationship("Estado", backref="tickets")
     prioridad = relationship("Prioridad", backref="tickets")
     creador = relationship("Usuario", foreign_keys=[id_creador])
     tecnico = relationship("Usuario", foreign_keys=[id_tecnico])
+    area = relationship("Area", backref="tickets")  # Nueva relación agregada
 
 
 

@@ -13,6 +13,7 @@ def obtener_ticket_por_id(db: Session, ticket_id: int):
         raise HTTPException(status_code=404, detail="Ticket no encontrado")
     return ticket
 
+
 def crear_ticket(db: Session, datos: TicketCreate):
     nuevo = Ticket(
         asunto=datos.asunto,
@@ -20,13 +21,15 @@ def crear_ticket(db: Session, datos: TicketCreate):
         estado_id=datos.estado_id,
         prioridad_id=datos.prioridad_id,
         id_creador=datos.id_creador,
-        id_tecnico=datos.id_tecnico
+        id_tecnico=datos.id_tecnico,
+        area_id=datos.area_id  # Agregado
     )
     db.add(nuevo)
     db.commit()
     db.refresh(nuevo)
     return nuevo
 
+# Actualizar ticket
 def actualizar_ticket(db: Session, ticket_id: int, datos: TicketUpdate):
     ticket = db.query(Ticket).filter(Ticket.id == ticket_id).first()
     if not ticket:
@@ -38,12 +41,15 @@ def actualizar_ticket(db: Session, ticket_id: int, datos: TicketUpdate):
     ticket.prioridad_id = datos.prioridad_id
     ticket.id_creador = datos.id_creador
     ticket.id_tecnico = datos.id_tecnico
+    ticket.area_id = datos.area_id  # Agregado
     ticket.fecha_cierre = datos.fecha_cierre
     ticket.fecha_actualizacion = datetime.utcnow()
 
     db.commit()
     db.refresh(ticket)
     return ticket
+
+
 
 def eliminar_ticket(db: Session, ticket_id: int):
     ticket = db.query(Ticket).filter(Ticket.id == ticket_id).first()
