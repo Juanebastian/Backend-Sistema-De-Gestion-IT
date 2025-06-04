@@ -22,3 +22,13 @@ def eliminar_modelo(db: Session, modelo_id: int):
         db.delete(modelo)
         db.commit()
     return modelo
+
+
+def actualizar_modelo(db: Session, modelo_id: int, modelo_data: ModeloCreate):
+    modelo = db.query(Modelo).filter(Modelo.id == modelo_id).first()
+    if not modelo:
+        return None
+    modelo.nombre = modelo_data.nombre
+    db.commit()
+    db.refresh(modelo)
+    return modelo

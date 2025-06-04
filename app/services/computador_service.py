@@ -7,34 +7,8 @@ from typing import List
 
 def obtener_todos_los_computadores(db: Session) -> List[ComputadorResponse]:
     computadores = db.query(Computador).all()
-    resultado = []
-    for c in computadores:
-        resultado.append(
-            ComputadorResponse(
-                id=c.id,
-                marca_id=c.marca_id,
-                nombre_marca=c.marca.nombre,
-                modelo_id=c.modelo_id,
-                nombre_modelo=c.modelo.nombre,
-                sistema_operativo_id=c.sistema_operativo_id,
-                nombre_sistema_operativo=c.sistema_operativo.nombre,
-                tipo_id=c.tipo_id,
-                nombre_tipo=c.tipo.nombre,
-                area_id=c.area_id,
-                nombre_area=c.area.nombre,
-                id_registrado_por=c.id_registrado_por,
-                nombre_usuario=c.usuario.nombre if c.usuario else "Desconocido",
-                ram=c.ram,
-                disco_duro=c.disco_duro,
-                serie=c.serie,
-                codigo_inventario=c.codigo_inventario,
-                fecha_adquisicion=c.fecha_adquisicion,
-                activo=c.activo,
-                fecha_creacion=c.fecha_creacion,
-                fecha_actualizacion=c.fecha_actualizacion
-            )
-        )
-    return resultado
+    return [ComputadorResponse.from_orm(c) for c in computadores]
+
 
 def crear_computador(db: Session, computador: ComputadorCreate) -> ComputadorOut:
     existente = db.query(Computador).filter(

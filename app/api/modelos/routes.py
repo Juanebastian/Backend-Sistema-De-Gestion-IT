@@ -28,3 +28,11 @@ def eliminar_modelo(modelo_id: int, db: Session = Depends(get_db)):
     if not modelo:
         raise HTTPException(status_code=404, detail="Modelo no encontrado")
     return modelo
+
+
+@router.put("/{modelo_id}", response_model=ModeloResponse)
+def actualizar_modelo(modelo_id: int, modelo: ModeloCreate, db: Session = Depends(get_db)):
+    modelo_actualizado = modelo_service.actualizar_modelo(db, modelo_id, modelo)
+    if not modelo_actualizado:
+        raise HTTPException(status_code=404, detail="Modelo no encontrado")
+    return modelo_actualizado

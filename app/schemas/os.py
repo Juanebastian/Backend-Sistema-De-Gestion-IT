@@ -12,3 +12,7 @@ class SistemaOperativoResponse(SistemaOperativoBase):
 
     class Config:
         from_attributes = True  # Equivale a orm_mode en Pydantic v1
+
+
+class SistemaOperativoUpdate(BaseModel):
+    nombre: str

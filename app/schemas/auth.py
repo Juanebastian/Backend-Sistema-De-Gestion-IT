@@ -33,3 +33,10 @@ class UserOut(BaseModel):
 
     class Config:
         orm_mode = True
+
+
+class LoginResponse(BaseModel):
+    success: bool
+    message: str
+    statusCode: int
+    data: Token
