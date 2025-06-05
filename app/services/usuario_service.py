@@ -57,3 +57,10 @@ def actualizar_usuario(db: Session, user_id: int, datos: UsuarioCreate):
     db.commit()
     db.refresh(usuario)
     return usuario
+
+def obtener_usuario_por_id(db: Session, user_id: int):
+    usuario = db.query(Usuario).filter(Usuario.id == user_id).first()
+    if not usuario:
+        raise HTTPException(status_code=404, detail="Usuario no encontrado")
+    return usuario
+
