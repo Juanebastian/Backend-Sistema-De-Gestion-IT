@@ -3,6 +3,7 @@ from sqlalchemy.orm import relationship
 from datetime import datetime
 from app.db.database import Base
 from app.db.models.area import Area
+from sqlalchemy import DateTime
 
 class Ticket(Base):
     __tablename__ = "tickets"
@@ -14,8 +15,8 @@ class Ticket(Base):
     prioridad_id = Column(Integer, ForeignKey("prioridades_ticket.id"))
     id_creador = Column(Integer, ForeignKey("usuarios.id"), nullable=False)
     id_tecnico = Column(Integer, ForeignKey("usuarios.id"))
-    fecha_creacion = Column(DateTime, default=datetime.utcnow)
-    fecha_actualizacion = Column(DateTime, default=datetime.utcnow)
+    fecha_creacion = Column(DateTime(timezone=True), default=datetime.now)
+    fecha_actualizacion = Column(DateTime(timezone=True), default=datetime.now)
     fecha_cierre = Column(DateTime, nullable=True)
     area_id = Column(Integer, ForeignKey("areas.id"))
 

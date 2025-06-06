@@ -9,7 +9,7 @@ from app.services.ticket_service import (
     obtener_ticket_por_id,
     crear_ticket,
     actualizar_ticket,
-    eliminar_ticket
+    eliminar_ticket, cerrar_ticket
 )
 
 router = APIRouter(prefix="/tickets", tags=["tickets"])
@@ -40,3 +40,9 @@ def actualizar_ticket_existente(ticket_id: int, ticket: TicketUpdate, db: Sessio
 @router.delete("/{ticket_id}")
 def eliminar_ticket_por_id(ticket_id: int, db: Session = Depends(get_db)):
     return eliminar_ticket(db, ticket_id)
+
+
+
+@router.put("/{ticket_id}/cerrar", response_model=TicketOut)
+def cerrar_ticket_endpoint(ticket_id: int, db: Session = Depends(get_db)):
+    return cerrar_ticket(db, ticket_id)

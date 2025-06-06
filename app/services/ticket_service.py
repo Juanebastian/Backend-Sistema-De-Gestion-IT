@@ -3,6 +3,10 @@ from fastapi import HTTPException
 from app.db.models.ticket import Ticket
 from app.schemas.ticket import TicketCreate, TicketUpdate
 from datetime import datetime
+from datetime import datetime
+from zoneinfo import ZoneInfo
+
+
 
 def obtener_tickets(db: Session):
     return db.query(Ticket).all()
@@ -43,7 +47,7 @@ def actualizar_ticket(db: Session, ticket_id: int, datos: TicketUpdate):
     ticket.id_tecnico = datos.id_tecnico
     ticket.area_id = datos.area_id  # Agregado
     ticket.fecha_cierre = datos.fecha_cierre
-    ticket.fecha_actualizacion = datetime.utcnow()
+    ticket.fecha_actualizacion = datetime.now(ZoneInfo("America/Bogota"))
 
     db.commit()
     db.refresh(ticket)
@@ -58,3 +62,17 @@ def eliminar_ticket(db: Session, ticket_id: int):
     db.delete(ticket)
     db.commit()
     return {"mensaje": "Ticket eliminado correctamente"}
+
+
+def cerrar_ticket(db: Session, ticket_id: int):
+    ticket = db.query(Ticket).filter(Ticket.id == ticket_id).first()
+    if not ticket:
+        raise HTTPException(status_code=404, detail="Ticket no encontrado")
+
+    ticket.estado_id = 3  # Asegúrate que el ID 3 representa "cerrado"
+    ticket.fecha_cierre = datetime.now(ZoneInfo("America/Bogota"))
+    ticket.fecha_actualizacion = datetime.now(ZoneInfo("America/Bogota"))
+
+    db.commit()
+    db.refresh(ticket)
+    return ticket
