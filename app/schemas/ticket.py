@@ -10,6 +10,7 @@ class TicketBase(BaseModel):
     id_creador: int
     id_tecnico: Optional[int]
     area_id: Optional[int]
+    observaciones: Optional[str]
 
 class TicketCreate(TicketBase):
     pass
@@ -25,3 +26,6 @@ class TicketOut(TicketBase):
 
     class Config:
         orm_mode = True
+
+class TicketCerrar(BaseModel):
+    observaciones: Optional[str]

@@ -49,7 +49,7 @@ def actualizar_usuario(db: Session, user_id: int, datos: UsuarioCreate):
     usuario.nombre = datos.nombre
     usuario.cedula = datos.cedula
     usuario.correo = datos.correo
-    usuario.contrasena = hash_password(datos.contrasena)
+    
     usuario.area_id = datos.area_id
     usuario.rol_id = datos.rol_id
     usuario.activo = datos.activo

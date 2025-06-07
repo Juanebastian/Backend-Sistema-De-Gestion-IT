@@ -3,13 +3,13 @@ from sqlalchemy.orm import Session
 from typing import List
 
 from app.db.database import SessionLocal
-from app.schemas.ticket import TicketCreate, TicketOut, TicketUpdate
+from app.schemas.ticket import TicketCreate, TicketOut, TicketUpdate, TicketCerrar
 from app.services.ticket_service import (
     obtener_tickets,
     obtener_ticket_por_id,
     crear_ticket,
     actualizar_ticket,
-    eliminar_ticket, cerrar_ticket
+    eliminar_ticket, cerrar_ticket, obtener_tickets_por_tecnico
 )
 
 router = APIRouter(prefix="/tickets", tags=["tickets"])
@@ -44,5 +44,9 @@ def eliminar_ticket_por_id(ticket_id: int, db: Session = Depends(get_db)):
 
 
 @router.put("/{ticket_id}/cerrar", response_model=TicketOut)
-def cerrar_ticket_endpoint(ticket_id: int, db: Session = Depends(get_db)):
-    return cerrar_ticket(db, ticket_id)
+def cerrar_ticket_endpoint(ticket_id: int, datos_cierre: TicketCerrar, db: Session = Depends(get_db)):
+    return cerrar_ticket(db, ticket_id, datos_cierre)
+
+@router.get("/tecnico/{id_tecnico}", response_model=List[TicketOut])
+def obtener_tickets_de_tecnico(id_tecnico: int, db: Session = Depends(get_db)):
+    return obtener_tickets_por_tecnico(db, id_tecnico)
